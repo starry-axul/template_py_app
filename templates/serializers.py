@@ -2,6 +2,6 @@ from rest_framework import serializers
 from templates.models import Template
 
 class TemplateSerializers(serializers.ModelSerializer):
-    class Meta:
+    class Meta():
         model = Template  
-        exclude = ['is_removed', 'created', 'modified']
+        fields = ('id','title','body','placeholders')

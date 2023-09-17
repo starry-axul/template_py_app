@@ -7,17 +7,32 @@ from .serializers import TemplateSerializers
 from .models import Template
 from rest_framework import status
 from django.http import Http404
+from templates.service import TemplateService
 
 class Templates(APIView):
+
+    def __init__(self):
+        self.service = TemplateService()
+
     def get(self, request, format=None, *args, **kwargs):
-        #print(help(request))
-        data = {"status": "OK", "code": 200}
-        #post = Template.objects.all()
-        #serializer = TemplateSerializers(data, many=True)
+
         
-        return Response(data)
+        data = self.service.get_templates()
+        
+        serializer = TemplateSerializers(data, many=True)
+        
+        res = {"status": "OK", "code": 200, "data": serializer.data}
+        return Response(res)
+    
+    def post(self, request, format=None, *args, **kwargs):
+        
 
-
+        body = request.data
+        data = self.service.create_template(body['title'], body['body'], body['placeholders'])
+        print(data)
+        serializer = TemplateSerializers(data, many=False)
+        res = {"status": "OK", "code": 200, "data": serializer.data}
+        return Response(res)
 """    
 class Post_APIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
