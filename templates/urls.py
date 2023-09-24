@@ -5,4 +5,5 @@ app_name = 'templates'
 
 urlpatterns = [
     path("", Templates.as_view()),
+    path('<int:id>', Templates_Detail.as_view()),
 ]

@@ -33,6 +33,24 @@ class Templates(APIView):
         serializer = TemplateSerializers(data, many=False)
         res = {"status": "OK", "code": 200, "data": serializer.data}
         return Response(res)
+
+
+class Templates_Detail(APIView):
+
+    def __init__(self):
+        self.service = TemplateService()
+
+    def get(self, request,id, format=None):
+
+        print("by id ", id)
+        data = self.service.get_template(id)
+        
+        serializer = TemplateSerializers(data, many=False)
+        
+        res = {"status": "OK", "code": 200, "data": serializer.data}
+        return Response(res)
+    
+    
 """    
 class Post_APIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
