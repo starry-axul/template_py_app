@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from .serializers import TemplateSerializers
+from .responses import ResOK, ResBadRequest
+from .serializers import TemplateSerializers, RequestSerializer
 from .models import Template
 from rest_framework import status
 from django.http import Http404
@@ -21,18 +21,25 @@ class Templates(APIView):
         
         serializer = TemplateSerializers(data, many=True)
         
-        res = {"status": "OK", "code": 200, "data": serializer.data}
-        return Response(res)
+        return ResOK(serializer.data)
     
     def post(self, request, format=None, *args, **kwargs):
         
+        serializer = RequestSerializer(data=request.data)
 
-        body = request.data
-        data = self.service.create_template(body['title'], body['body'], body['placeholders'])
-        print(data)
-        serializer = TemplateSerializers(data, many=False)
-        res = {"status": "OK", "code": 200, "data": serializer.data}
-        return Response(res)
+        if not serializer.is_valid():
+            return ResBadRequest(serializer.errors)
+        
+        body = serializer.data
+        print(body)
+        print(body['title'])
+
+
+        response = TemplateSerializers(
+            self.service.create_template(body['title'], body['type'], body['version'], body['body'], body['placeholders'])
+            , many=False)
+        
+        return ResOK(response.data)
 
 
 class Templates_Detail(APIView):
@@ -47,8 +54,7 @@ class Templates_Detail(APIView):
         
         serializer = TemplateSerializers(data, many=False)
         
-        res = {"status": "OK", "code": 200, "data": serializer.data}
-        return Response(res)
+        return ResOK(serializer.data)
     
     
 """    

@@ -45,3 +45,24 @@ https://docs.djangoproject.com/en/4.2/intro/tutorial01/
 ```
 python manage.py runserver 8082
 ```
+
+# MySQL
+
+```
+sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
+
+export MYSQLCLIENT_CFLAGS=`pkg-config mysqlclient --cflags`
+export MYSQLCLIENT_LDFLAGS=`pkg-config mysqlclient --libs`
+pip install mysqlclient
+
+```
+
+## Error
+
+```
+sudo apt-get install libssl-dev
+
+export MYSQLCLIENT_CFLAGS=`pkg-config mysqlclient --cflags`
+export MYSQLCLIENT_LDFLAGS=`pkg-config mysqlclient --libs`
+pip install mysqlclient
+```

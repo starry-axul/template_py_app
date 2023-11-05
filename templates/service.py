@@ -10,6 +10,6 @@ class TemplateService:
     def get_template(self, id):
         return self.repository.get_template(id)
 
-    def create_template(self, title, body, placeholders):
+    def create_template(self, title, type, version, body, placeholders):
         pholders = ','.join(placeholders)
-        return self.repository.create_template(title, body, pholders)
+        return self.repository.create_template(title, type, version, body, pholders)
