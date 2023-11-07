@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from rest_framework.views import APIView
-from .responses import OK, BadRequest, InternalServerError
+from .responses import OK, BadRequest, endpoint
 from .serializers import TemplateSerializers, RequestSerializer
 from .models import Template
 from rest_framework import status
@@ -14,15 +14,20 @@ class Templates(APIView):
     def __init__(self):
         self.service = TemplateService()
 
+    @endpoint
     def get(self, request, format=None, *args, **kwargs):
+        cluster = request.GET.get("cluster")            
+        type = request.GET.get("type")
+        version = request.GET.get("version")
+
+        serializer = TemplateSerializers(
+            self.service.get_templates(cluster, type, version)
+            , many=True)
+    
+        return OK(serializer.data)
 
         
-        data = self.service.get_templates()
-        
-        serializer = TemplateSerializers(data, many=True)
-        
-        return OK(serializer.data)
-    
+    @endpoint
     def post(self, request, format=None, *args, **kwargs):
         
         serializer = RequestSerializer(data=request.data)
@@ -32,14 +37,11 @@ class Templates(APIView):
         
         body = serializer.data
 
-        try:
-            response = TemplateSerializers(
-                self.service.create_template(body['cluster'], body['type'], body['version'], body['body'], body['placeholders'])
-                , many=False)
-            return OK(response.data)
-        except Exception as err:
-            print(err)
-            return InternalServerError(str(err))
+        response = TemplateSerializers(
+            self.service.create_template(body['cluster'], body['type'], body['version'], body['body'], body['placeholders'])
+            , many=False)
+        return OK(response.data)
+        
         
         
 
@@ -49,16 +51,17 @@ class Templates_Detail(APIView):
     def __init__(self):
         self.service = TemplateService()
 
+    @endpoint
     def get(self, request,id, format=None):
 
-        print("by id ", id)
         data = self.service.get_template(id)
         
         serializer = TemplateSerializers(data, many=False)
         
         return OK(serializer.data)
     
-    
+
+
 """    
 class Post_APIView(APIView):
     def get(self, request, format=None, *args, **kwargs):

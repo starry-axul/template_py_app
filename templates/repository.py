@@ -1,10 +1,16 @@
 from templates.models import Template
 
 class TemplateRepository:
-    def get_templates(self, cluster=""):
+    def get_templates(self, cluster, type, version):
         filter = {}
-        if cluster != "":
+        if cluster != None:
             filter['cluster'] = cluster
+
+        if type != None:
+            filter['type'] = type
+
+        if version != None:
+            filter['version'] = version
 
         return Template.objects.all().filter(**filter)
     
