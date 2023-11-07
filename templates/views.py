@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from rest_framework.views import APIView
-from .responses import ResOK, ResBadRequest
+from .responses import OK, BadRequest, InternalServerError
 from .serializers import TemplateSerializers, RequestSerializer
 from .models import Template
 from rest_framework import status
@@ -21,25 +21,27 @@ class Templates(APIView):
         
         serializer = TemplateSerializers(data, many=True)
         
-        return ResOK(serializer.data)
+        return OK(serializer.data)
     
     def post(self, request, format=None, *args, **kwargs):
         
         serializer = RequestSerializer(data=request.data)
 
         if not serializer.is_valid():
-            return ResBadRequest(serializer.errors)
+            return BadRequest(serializer.errors)
         
         body = serializer.data
-        print(body)
-        print(body['title'])
 
-
-        response = TemplateSerializers(
-            self.service.create_template(body['title'], body['type'], body['version'], body['body'], body['placeholders'])
-            , many=False)
+        try:
+            response = TemplateSerializers(
+                self.service.create_template(body['cluster'], body['type'], body['version'], body['body'], body['placeholders'])
+                , many=False)
+            return OK(response.data)
+        except Exception as err:
+            print(err)
+            return InternalServerError(str(err))
         
-        return ResOK(response.data)
+        
 
 
 class Templates_Detail(APIView):
@@ -54,7 +56,7 @@ class Templates_Detail(APIView):
         
         serializer = TemplateSerializers(data, many=False)
         
-        return ResOK(serializer.data)
+        return OK(serializer.data)
     
     
 """    

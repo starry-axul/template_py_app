@@ -1,15 +1,23 @@
 from templates.models import Template
 
 class TemplateRepository:
-    def get_templates(self):
-        return Template.objects.all()
+    def get_templates(self, cluster=""):
+        filter = {}
+        if cluster != "":
+            filter['cluster'] = cluster
+
+        return Template.objects.all().filter(**filter)
     
     def get_template(self, id):
         return Template.objects.get(id=id)
+    
 
-    def create_template(self, title,type, version, body, placeholders):
+    def check_unique_values(self, cluster, type, version):
+        pass
+
+    def create_template(self, cluster,type, version, body, placeholders):
         tmp = Template.objects.create(
-            title=title,
+            cluster=cluster,
             type=type, 
             version=version,
             body=body,
