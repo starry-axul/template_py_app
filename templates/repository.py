@@ -18,8 +18,6 @@ class TemplateRepository:
     def get_template(self, id):
         return Template.objects.get(id=id)
 
-    def check_unique_values(self, cluster, type, version):
-        pass
 
     def create_template(self, cluster, type, version, body, placeholders):
         tmp = Template.objects.create(
