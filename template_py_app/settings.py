@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'template_py_app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv("DB_ENGINE"), 
+        'ENGINE': os.getenv("DB_ENGINE"),
         'NAME': os.getenv("DB_NAME"),
         'USER': os.getenv("DB_USER"),
         'PASSWORD': os.getenv("DB_PASSWORD"),
@@ -136,7 +136,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-#LOGGING = {
+# LOGGING = {
 #    'version': 1,
 #    'filters': {
 #        'require_debug_true': {
@@ -156,4 +156,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #            'handlers': ['console'],
 #        }
 #    }
-#}
+# }

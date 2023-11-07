@@ -1,10 +1,11 @@
 from templates.repository import TemplateRepository
 from .responses import BadRequestExcep
 
+
 class TemplateService:
     def __init__(self):
         self.repository = TemplateRepository()
-    
+
     def get_templates(self, cluster, type, version):
         return self.repository.get_templates(cluster, type, version)
 
@@ -17,7 +18,8 @@ class TemplateService:
         template = self.repository.get_templates(cluster, type, version)
 
         if template.exists():
-            raise BadRequestExcep(f"there is a templates with the values: cluster={cluster}, type={type}, version={version}")
+            raise BadRequestExcep(
+                f"there is a templates with the values: cluster={cluster}, type={type}, version={version}")
 
-
-        return self.repository.create_template(cluster, type, version, body, pholders)
+        return self.repository.create_template(
+            cluster, type, version, body, pholders)

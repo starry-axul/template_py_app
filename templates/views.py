@@ -5,9 +5,9 @@ from rest_framework.views import APIView
 from .responses import OK, BadRequest, endpoint
 from .serializers import TemplateSerializers, RequestSerializer
 from .models import Template
-from rest_framework import status
 from django.http import Http404
 from templates.service import TemplateService
+
 
 class Templates(APIView):
 
@@ -16,34 +16,34 @@ class Templates(APIView):
 
     @endpoint
     def get(self, request, format=None, *args, **kwargs):
-        cluster = request.GET.get("cluster")            
+        cluster = request.GET.get("cluster")
         type = request.GET.get("type")
         version = request.GET.get("version")
 
         serializer = TemplateSerializers(
-            self.service.get_templates(cluster, type, version)
-            , many=True)
-    
+            self.service.get_templates(cluster, type, version), many=True)
+
         return OK(serializer.data)
 
-        
     @endpoint
     def post(self, request, format=None, *args, **kwargs):
-        
+
         serializer = RequestSerializer(data=request.data)
 
         if not serializer.is_valid():
             return BadRequest(serializer.errors)
-        
+
         body = serializer.data
 
         response = TemplateSerializers(
-            self.service.create_template(body['cluster'], body['type'], body['version'], body['body'], body['placeholders'])
-            , many=False)
+            self.service.create_template(
+                body['cluster'],
+                body['type'],
+                body['version'],
+                body['body'],
+                body['placeholders']),
+            many=False)
         return OK(response.data)
-        
-        
-        
 
 
 class Templates_Detail(APIView):
@@ -52,21 +52,20 @@ class Templates_Detail(APIView):
         self.service = TemplateService()
 
     @endpoint
-    def get(self, request,id, format=None):
+    def get(self, request, id, format=None):
 
         data = self.service.get_template(id)
-        
+
         serializer = TemplateSerializers(data, many=False)
-        
+
         return OK(serializer.data)
-    
 
 
-"""    
+"""
 class Post_APIView(APIView):
     def get(self, request, format=None, *args, **kwargs):
         post = Post.objects.all()
-        
+
     def post(self, request, format=None):
         serializer = PostSerializers(data=request.data)
         if serializer.is_valid():
@@ -81,7 +80,7 @@ class Post_APIView_Detail(APIView):
             raise Http404
     def get(self, request, pk, format=None):
         post = self.get_object(pk)
-        serializer = PostSerializers(post)  
+        serializer = PostSerializers(post)
         return Response(serializer.data)
     def put(self, request, pk, format=None):
         post = self.get_object(pk)
